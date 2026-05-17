@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block crumb %}<a href="/admin">clients</a> / {{ config.client_id }}{% endblock %}
+{% block body %}
+<h1>{{ config.client_id }} <span class="muted" style="font-size:0.9rem; font-weight: normal;">— {{ config.domain }}</span></h1>
+
+<div class="stats">
+  <div class="stat"><div class="n">{{ leads|length }}</div><div class="label">Leads</div></div>
+  <div class="stat"><div class="n"><code>{{ config.crm }}</code></div><div class="label">CRM</div></div>
+  <div class="stat"><div class="n"><code>{{ config.form_plugin }}</code></div><div class="label">Form plugin</div></div>
+  <div class="stat"><div class="n"><code>{{ config.auto_response_policy.value }}</code></div><div class="label">Reply mode</div></div>
+</div>
+
+<h2>Leads</h2>
+{% if leads %}
+<table>
+  <thead><tr><th>Received</th><th>Lead</th><th>Email</th><th>Plugin</th><th>Status</th><th>Follow-ups</th></tr></thead>
+  <tbody>
+  {% for lead in leads %}
+    <tr>
+      <td>{{ lead.received_at.strftime("%Y-%m-%d %H:%M") }}</td>
+      <td><a href="/admin/{{ config.client_id }}/leads/{{ lead.lead_id }}"><code>{{ lead.lead_id }}</code></a></td>
+      <td>{{ lead.email }}</td>
+      <td><code>{{ lead.source_plugin }}</code></td>
+      <td><span class="pill {{ status_class(lead.status.value) }}">{{ lead.status.value }}</span></td>
+      <td>{{ lead.followups_sent }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No leads yet for this client.</p>
+{% endif %}
+
+<h2>Config (read-only)</h2>
+<pre>{{ config.model_dump_json(indent=2) }}</pre>
+{% endblock %}

@@ -1,0 +1,27 @@
+client_id: globex
+domain: globex.io
+form_plugin: gravity
+crm: pipedrive
+crm_credentials_secret_id: globex_pipedrive
+sender_email: sales@globex.io
+tone_profile:
+  id: globex_brisk
+  description: >
+    Crisp, professional, B2B. Globex is an enterprise vendor — every reply
+    should respect the reader's time. No emojis, no fluff.
+  sample_phrases:
+    - "Received — thanks."
+    - "I'll have an answer within one business day."
+    - "Confirming next steps below."
+  signature: |
+    Globex Sales
+auto_response_policy: draft
+followup_steps:
+  - id: globex_d3
+    delay_days: 3
+    subject: "RE: your inquiry"
+    body_template: |
+      {first_name},
+      Following up on your inquiry. Let me know if there's anything else
+      you need from us.
+      — Globex Sales

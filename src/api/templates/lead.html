@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block crumb %}<a href="/admin">clients</a> / <a href="/admin/{{ lead.client_id }}">{{ lead.client_id }}</a> / {{ lead.lead_id }}{% endblock %}
+{% block body %}
+<h1>{{ lead.email }}</h1>
+<p class="muted">Lead <code>{{ lead.lead_id }}</code> · received {{ lead.received_at.strftime("%Y-%m-%d %H:%M UTC") }}</p>
+
+<div class="row">
+  <div>
+    <h2>Status</h2>
+    <p><span class="pill {{ status_class(lead.status.value) }}">{{ lead.status.value }}</span></p>
+    <h2>Contact</h2>
+    <table>
+      <tr><th>Name</th><td>{{ lead.first_name or "—" }} {{ lead.last_name or "" }}</td></tr>
+      <tr><th>Email</th><td>{{ lead.email }}</td></tr>
+      <tr><th>Phone</th><td>{{ lead.phone or "—" }}</td></tr>
+      <tr><th>Company</th><td>{{ lead.company or "—" }}</td></tr>
+      <tr><th>Plugin</th><td><code>{{ lead.source_plugin }}</code></td></tr>
+      <tr><th>Form ID</th><td>{{ lead.source_form_id or "—" }}</td></tr>
+      <tr><th>Email valid</th><td>{{ lead.email_valid }}</td></tr>
+      <tr><th>Disposable</th><td>{{ lead.email_disposable }}</td></tr>
+      <tr><th>Auto-response sent</th><td>{{ lead.auto_response_sent_at or "—" }}</td></tr>
+      <tr><th>Reply detected</th><td>{{ lead.reply_detected_at or "—" }}</td></tr>
+      <tr><th>Follow-ups sent</th><td>{{ lead.followups_sent }}</td></tr>
+    </table>
+  </div>
+  <div>
+    <h2>Message</h2>
+    <pre>{{ lead.message or "(no message)" }}</pre>
+    <h2>Enrichment</h2>
+    <pre>{{ lead.enrichment }}</pre>
+    {% if lead.extra_fields %}
+    <h2>Extra fields</h2>
+    <pre>{{ lead.extra_fields }}</pre>
+    {% endif %}
+  </div>
+</div>
+
+<h2>Audit trail ({{ audit|length }} entries)</h2>
+{% if audit %}
+<table>
+  <thead><tr><th>Timestamp</th><th>Step</th><th>Status</th><th>Detail</th></tr></thead>
+  <tbody>
+  {% for e in audit %}
+    <tr>
+      <td>{{ e.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      <td><code>{{ e.step }}</code></td>
+      <td>
+        {% if e.status.value == "ok" %}<span class="pill good">{{ e.status.value }}</span>
+        {% elif e.status.value == "failed" %}<span class="pill bad">{{ e.status.value }}</span>
+        {% else %}<span class="pill neutral">{{ e.status.value }}</span>{% endif %}
+      </td>
+      <td>
+        {% if e.error %}<code style="color: var(--bad);">{{ e.error }}</code><br>{% endif %}
+        {% if e.detail %}<code>{{ e.detail }}</code>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No audit entries.</p>
+{% endif %}
+{% endblock %}

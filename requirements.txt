@@ -1,0 +1,33 @@
+# --- Web framework / API ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+jinja2==3.1.4
+python-multipart==0.0.20
+
+# --- Models / config ---
+pydantic==2.10.4
+pydantic-settings==2.7.0
+PyYAML==6.0.2
+python-dotenv==1.0.1
+
+# --- Queueing / storage ---
+redis==5.2.1
+fakeredis==2.26.2
+
+# --- HTTP / integrations ---
+httpx==0.28.1
+tenacity==9.0.0
+email-validator==2.2.0
+dnspython==2.7.0
+
+# --- Anthropic (Claude) ---
+anthropic==0.42.0
+
+# --- Logging ---
+structlog==24.4.0
+
+# --- Tests ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+pytest-cov==6.0.0
+respx==0.22.0

@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# Example per-client config. Copy this to `<client_id>.yaml` and edit.
+# ---------------------------------------------------------------------------
+
+# REQUIRED — unique slug for this client. MUST match the filename
+#            (e.g. acme → acme.yaml).
+client_id: example
+
+# REQUIRED — root domain of the client's WordPress site. Used to resolve a
+#            webhook to a client when the request lacks a client_id.
+domain: example.com
+
+# REQUIRED — the form plugin THIS client uses on its WordPress site.
+# One of: wpforms | gravity | fluent
+form_plugin: wpforms
+
+# REQUIRED — the CRM this client uses. One of: hubspot | pipedrive | mailchimp
+crm: hubspot
+
+# REQUIRED — secret-store id holding the CRM credentials JSON.
+# For local dev, set env var EXAMPLE_HUBSPOT_JSON='{"access_token":"..."}'
+crm_credentials_secret_id: example_hubspot
+
+# REQUIRED — email address auto-responses are sent FROM.
+sender_email: hello@example.com
+
+# REQUIRED — tone profile drives the Claude system prompt for this client.
+tone_profile:
+  id: example_friendly
+  description: >
+    Warm, concise, and human. Reads like a one-person founder writing back
+    personally, not a marketing department. No exclamation marks.
+  sample_phrases:
+    - "Thanks for reaching out — really glad you found us."
+    - "Quick question before I dig in:"
+    - "I'll take a look today and get back to you."
+  signature: |
+    Sam
+    Example Co.
+
+# OPTIONAL — draft (review before sending) or send (immediate). Default: draft.
+auto_response_policy: draft
+
+# OPTIONAL — follow-up cadence after the initial auto-response.
+# `delay_days` is measured from auto_response_sent_at for the first step,
+# and from the previous follow-up for subsequent steps.
+followup_steps:
+  - id: nudge_1
+    delay_days: 3
+    subject: "Following up — {first_name}"
+    body_template: |
+      Hi {first_name},
+
+      Just bumping this in case it got buried. Happy to jump on a quick call
+      if it's easier than email.
+
+      — Sam
+  - id: nudge_2
+    delay_days: 7
+    subject: "Last one from me"
+    body_template: |
+      Hi {first_name},
+
+      I'll stop pinging after this — but if anything changes, you know where
+      to find me.
+
+      — Sam
+
+# OPTIONAL — simple routing rules. Evaluated in order.
+routing_rules:
+  - when_field: message
+    matches: "(?i)(enterprise|procurement|RFP)"
+    assign_to: "founder@example.com"
+    tag: enterprise
+
+# OPTIONAL — per-client HMAC secret for webhook signing. Falls back to
+# WEBHOOK_DEFAULT_SECRET env var if unset.
+# webhook_secret: <set in production>

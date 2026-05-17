@@ -1,0 +1,26 @@
+client_id: acme
+domain: acme.com
+form_plugin: wpforms
+crm: hubspot
+crm_credentials_secret_id: acme_hubspot
+sender_email: hello@acme.com
+tone_profile:
+  id: acme_warm
+  description: >
+    Friendly, helpful, slightly informal. Acme is a small consultancy — the
+    voice should feel like a partner replying, not a sales team.
+  sample_phrases:
+    - "Thanks for getting in touch."
+    - "Happy to help with that."
+    - "Let me know what works for a quick chat."
+  signature: |
+    The Acme team
+auto_response_policy: send
+followup_steps:
+  - id: acme_nudge
+    delay_days: 3
+    subject: "Following up — {first_name}"
+    body_template: |
+      Hi {first_name},
+      Just checking in on the note below. Want me to put time on the calendar?
+      — The Acme team

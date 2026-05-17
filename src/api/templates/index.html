@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block crumb %}clients{% endblock %}
+{% block body %}
+<h1>Clients</h1>
+
+<div class="stats">
+  <div class="stat"><div class="n">{{ queue.pending }}</div><div class="label">Pending</div></div>
+  <div class="stat"><div class="n">{{ queue.scheduled_retries }}</div><div class="label">Retries scheduled</div></div>
+  <div class="stat"><div class="n">{{ queue.dead_letter }}</div><div class="label">Dead-letter</div></div>
+</div>
+
+{% if clients %}
+<table>
+  <thead>
+    <tr><th>Client ID</th><th>Domain</th><th>Form plugin</th><th>CRM</th><th>Leads</th></tr>
+  </thead>
+  <tbody>
+  {% for c in clients %}
+    <tr>
+      <td><a href="/admin/{{ c.client_id }}">{{ c.client_id }}</a></td>
+      <td>{{ c.domain }}</td>
+      <td><code>{{ c.plugin }}</code></td>
+      <td><code>{{ c.crm }}</code></td>
+      <td>{{ c.leads }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No clients configured. Drop a YAML file in <code>config/clients/</code>.</p>
+{% endif %}
+{% endblock %}
