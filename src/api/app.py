@@ -51,10 +51,20 @@ def build_app() -> FastAPI:
 
     @app.get("/health")
     def health() -> dict:
+        # Health is a liveness probe: it must not 500 when a downstream
+        # dependency is unavailable. We surface Redis state as a field so
+        # ops can tell the difference between "app dead" and "Redis dead".
+        try:
+            queue_state: dict | str = get_queue().queue_lengths()
+            redis_status = "ok"
+        except Exception as e:  # redis.ConnectionError, TimeoutError, etc.
+            queue_state = "unavailable"
+            redis_status = f"unreachable: {type(e).__name__}"
         return {
             "status": "ok",
             "form_plugins": registered_form_plugins(),
-            "queue": get_queue().queue_lengths(),
+            "redis": redis_status,
+            "queue": queue_state,
         }
 
     # ---- Webhook receiver ------------------------------------------------
